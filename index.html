@@ -125,62 +125,133 @@
         <div class="card-1" id="anchor-yq-compare">
             <div class="section-title">舆情数据</div>
 
-            <!-- 声量 -->
-            <div class="yqdc-row">
-                <div class="yqdc-metric-name">声量<br><small>(万条)</small></div>
-                <div class="yqdc-bars-col yqdc-bars-col-vstack">
-                    <div class="yqdc-bar-item yqdc-bar-item-a">
-                        <div class="yqdc-bar-bg">
-                            <div class="yqdc-bar yqdc-bar-a" style="width:100%"></div>
-                        </div>
-                        <span class="yqdc-bar-val yqdc-val-a">25.9</span>
-                    </div>
-                    <div class="yqdc-bar-item yqdc-bar-item-b">
-                        <div class="yqdc-bar-bg">
-                            <div class="yqdc-bar yqdc-bar-b" style="width:55.2%"></div>
-                        </div>
-                        <span class="yqdc-bar-val yqdc-val-b">14.3</span>
-                    </div>
+            <div class="yqdc-echarts-grid">
+                <div class="yqdc-echarts-item">
+                    <div id="yqdcChartVolume" class="yqdc-echart-box"></div>
+                    <div class="yqdc-echart-xlabel">声量<small>（万条）</small></div>
+                </div>
+                <div class="yqdc-echarts-item">
+                    <div id="yqdcChartInteract" class="yqdc-echart-box"></div>
+                    <div class="yqdc-echart-xlabel">互动量<small>（万次）</small></div>
+                </div>
+                <div class="yqdc-echarts-item">
+                    <div id="yqdcChartAccount" class="yqdc-echart-box"></div>
+                    <div class="yqdc-echart-xlabel">账号<small>（个）</small></div>
                 </div>
             </div>
 
-            <!-- 互动量 -->
-            <div class="yqdc-row">
-                <div class="yqdc-metric-name">互动量<br><small>(万次)</small></div>
-                <div class="yqdc-bars-col yqdc-bars-col-vstack">
-                    <div class="yqdc-bar-item yqdc-bar-item-a">
-                        <div class="yqdc-bar-bg">
-                            <div class="yqdc-bar yqdc-bar-a" style="width:100%"></div>
-                        </div>
-                        <span class="yqdc-bar-val yqdc-val-a">171</span>
-                    </div>
-                    <div class="yqdc-bar-item yqdc-bar-item-b">
-                        <div class="yqdc-bar-bg">
-                            <div class="yqdc-bar yqdc-bar-b" style="width:52.0%"></div>
-                        </div>
-                        <span class="yqdc-bar-val yqdc-val-b">89</span>
-                    </div>
-                </div>
-            </div>
+            <script>
+            (function () {
+                var charts = [];
+                var yqdcGradA = {
+                    type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                    colorStops: [{ offset: 0, color: '#FFBA5E' }, { offset: 1, color: '#FE8301' }]
+                };
+                var yqdcGradB = {
+                    type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                    colorStops: [{ offset: 0, color: '#A5B2D1' }, { offset: 1, color: '#6E81B3' }]
+                };
 
-            <!-- 账号 -->
-            <div class="yqdc-row yqdc-row-last">
-                <div class="yqdc-metric-name">账号<br><small>(个)</small></div>
-                <div class="yqdc-bars-col yqdc-bars-col-vstack">
-                    <div class="yqdc-bar-item yqdc-bar-item-a">
-                        <div class="yqdc-bar-bg">
-                            <div class="yqdc-bar yqdc-bar-a" style="width:100%"></div>
-                        </div>
-                        <span class="yqdc-bar-val yqdc-val-a">18,600</span>
-                    </div>
-                    <div class="yqdc-bar-item yqdc-bar-item-b">
-                        <div class="yqdc-bar-bg">
-                            <div class="yqdc-bar yqdc-bar-b" style="width:60.2%"></div>
-                        </div>
-                        <span class="yqdc-bar-val yqdc-val-b">11,200</span>
-                    </div>
-                </div>
-            </div>
+                function createBaseOption(max, valueA, valueB, formatter, gridConf) {
+                    return {
+                        animationDuration: 500,
+                        grid: gridConf || { left: 20, right: 8, top: 12, bottom: 10 },
+                        xAxis: {
+                            type: 'category',
+                            data: ['事件A', '事件B'],
+                            axisLine: { show: false },
+                            axisTick: { show: false },
+                            axisLabel: { show: false }
+                        },
+                        yAxis: {
+                            type: 'value',
+                            min: 0,
+                            max: max,
+                            splitNumber: 2,
+                            axisLine: { show: false },
+                            axisTick: { show: false },
+                            axisLabel: { color: '#9aa0a6', fontSize: 10 },
+                            splitLine: { lineStyle: { color: '#eceff3', type: 'dotted' } }
+                        },
+                        series: [{
+                            type: 'bar',
+                            data: [
+                                { value: valueA, label: { color: '#F6AB00' } },
+                                { value: valueB, label: { color: '#6E81B3' } }
+                            ],
+                            barWidth: 20,
+                            itemStyle: {
+                                borderRadius: [3, 3, 0, 0],
+                                color: function (p) { return p.dataIndex === 0 ? yqdcGradA : yqdcGradB; }
+                            },
+                            label: {
+                                show: true,
+                                position: 'top',
+                                color: '#666',
+                                fontSize: 12,
+                                fontWeight: 700,
+                                formatter: function (p) { return formatter(Number(p.value)); }
+                            }
+                        }]
+                    };
+                }
+
+                function initVolumeChart() {
+                    var el = document.getElementById('yqdcChartVolume');
+                    if (!el || typeof echarts === 'undefined') return;
+                    var chart = echarts.init(el);
+                    charts.push(chart);
+                    chart.setOption(createBaseOption(30, 25.9, 14.3, function (v) {
+                        return v.toFixed(1);
+                    }, { left: 22, right: 8, top: 12, bottom: 10 }), true);
+                }
+
+                function initInteractChart() {
+                    var el = document.getElementById('yqdcChartInteract');
+                    if (!el || typeof echarts === 'undefined') return;
+                    var chart = echarts.init(el);
+                    charts.push(chart);
+                    chart.setOption(createBaseOption(200, 171, 89, function (v) {
+                        return String(v);
+                    }, { left: 30, right: 8, top: 12, bottom: 10 }), true);
+                }
+
+                function initAccountChart() {
+                    var el = document.getElementById('yqdcChartAccount');
+                    if (!el || typeof echarts === 'undefined') return;
+                    var chart = echarts.init(el);
+                    charts.push(chart);
+                    var option = createBaseOption(20000, 18600, 11200, function (v) {
+                        return v.toLocaleString('zh-CN');
+                    }, { left: 25, right: 8, top: 12, bottom: 10 });
+                    option.yAxis.axisLabel.formatter = function (v) {
+                        if (v === 0) return '0';
+                        return (v / 10000) + '万';
+                    };
+                    chart.setOption(option, true);
+                }
+
+                function initYqdcCharts() {
+                    if (typeof echarts === 'undefined') {
+                        setTimeout(initYqdcCharts, 100);
+                        return;
+                    }
+                    initVolumeChart();
+                    initInteractChart();
+                    initAccountChart();
+                }
+
+                window.addEventListener('resize', function () {
+                    charts.forEach(function (c) { if (c) c.resize(); });
+                });
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initYqdcCharts);
+                } else {
+                    initYqdcCharts();
+                }
+            })();
+            </script>
 
         </div>
 
@@ -682,13 +753,44 @@
                 <button class="btn flex-fill" onclick="updateZldCompareChart('day', this)">日级</button>
             </div>
 
-            <div id="zldCompareInsights" class="trend-compare-insights"></div>
             <div id="zldCompareChartMain" style="height:320px;width:100%;"></div>
+            <div id="zldCompareConclusionWrap" aria-label="舆情增速结论信息列表"></div>
+            <div style="display:flex;justify-content:flex-start;margin:8px 0 6px;">
+                <button type="button" id="zldDataToggleBtn" class="btn btn-sm">详细数据 <i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            </div>
             <div id="zldCompareDataTableWrap" aria-label="舆情增速数据表"></div>
 
             <script>
             (function () {
                 var zldChart = null;
+                var zldTableExpanded = false;
+
+                function setZldTableExpanded(expanded) {
+                    zldTableExpanded = !!expanded;
+                    var wrap = document.getElementById('zldCompareDataTableWrap');
+                    var btn = document.getElementById('zldDataToggleBtn');
+                    var icon = btn ? btn.querySelector('i') : null;
+                    if (wrap) {
+                        wrap.style.display = zldTableExpanded ? 'block' : 'none';
+                    }
+                    if (btn) {
+                        btn.setAttribute('aria-expanded', zldTableExpanded ? 'true' : 'false');
+                        btn.classList.toggle('active', zldTableExpanded);
+                    }
+                    if (icon) {
+                        icon.classList.toggle('fa-chevron-up', zldTableExpanded);
+                        icon.classList.toggle('fa-chevron-down', !zldTableExpanded);
+                    }
+                }
+
+                function bindZldDataToggle() {
+                    var btn = document.getElementById('zldDataToggleBtn');
+                    if (!btn || btn.dataset.bound === '1') return;
+                    btn.dataset.bound = '1';
+                    btn.addEventListener('click', function () {
+                        setZldTableExpanded(!zldTableExpanded);
+                    });
+                }
 
                 function escapeZldHtml(s) {
                     return String(s)
@@ -729,6 +831,37 @@
                     setTimeout(syncZldTableHScrollWidth, 80);
                 }
 
+                function syncZldConclusionHScrollWidth() {
+                    var wrap = document.getElementById('zldCompareConclusionWrap');
+                    if (!wrap) return;
+                    var main = wrap.querySelector('.zld-data-table-scroll-main');
+                    var inner = wrap.querySelector('.zld-data-table-hscroll-inner');
+                    var table = main && main.querySelector('table');
+                    if (!inner || !table) return;
+                    inner.style.width = table.scrollWidth + 'px';
+                }
+
+                function bindZldConclusionHScroll() {
+                    var wrap = document.getElementById('zldCompareConclusionWrap');
+                    if (!wrap) return;
+                    var main = wrap.querySelector('.zld-data-table-scroll-main');
+                    var bar = wrap.querySelector('.zld-data-table-hscroll');
+                    if (!main || !bar) return;
+                    main.addEventListener('scroll', function () {
+                        if (Math.abs(bar.scrollLeft - main.scrollLeft) > 1) {
+                            bar.scrollLeft = main.scrollLeft;
+                        }
+                    });
+                    bar.addEventListener('scroll', function () {
+                        if (Math.abs(main.scrollLeft - bar.scrollLeft) > 1) {
+                            main.scrollLeft = bar.scrollLeft;
+                        }
+                    });
+                    syncZldConclusionHScrollWidth();
+                    requestAnimationFrame(syncZldConclusionHScrollWidth);
+                    setTimeout(syncZldConclusionHScrollWidth, 80);
+                }
+
                 function renderZldDataTable(type) {
                     var wrap = document.getElementById('zldCompareDataTableWrap');
                     if (!wrap || !window._zldCmpData || !window._zldCmpData[type]) return;
@@ -754,6 +887,7 @@
                     parts.push('</tr></tbody></table></div><div class="zld-data-table-hscroll" aria-hidden="true"><div class="zld-data-table-hscroll-inner"></div></div></div>');
                     wrap.innerHTML = parts.join('');
                     bindZldTableHScroll();
+                    setZldTableExpanded(zldTableExpanded);
                 }
 
                 function calcZldWindowAvg(arr, hours) {
@@ -764,8 +898,8 @@
                     return total / count;
                 }
 
-                function renderZldCompareInsights() {
-                    var el = document.getElementById('zldCompareInsights');
+                function renderZldConclusionList() {
+                    var el = document.getElementById('zldCompareConclusionWrap');
                     var source = window._zldCmpData && window._zldCmpData.hour;
                     if (!el || !source) return;
                     var a4 = calcZldWindowAvg(source.a, 4);
@@ -774,31 +908,26 @@
                     var b24 = calcZldWindowAvg(source.b, 24);
                     var a72 = calcZldWindowAvg(source.a, 72);
                     var b72 = calcZldWindowAvg(source.b, 72);
-                    function compareText(a, b) {
-                        if (a === b) return '两事件持平 · 差值 0.0';
-                        var leader = a > b ? '事件A' : '事件B';
-                        var diff = Math.abs(a - b);
-                        var base = Math.min(a, b);
-                        var pct = base > 0 ? (diff / base * 100) : 0;
-                        return leader + '更快 ' + pct.toFixed(1) + '% · 差值 ' + diff.toFixed(1);
-                    }
-
-                    el.innerHTML = ''
-                        + '<div class="trend-insight-item">'
-                        +   '<div class="trend-insight-title">4小时平均增速（条/小时）</div>'
-                        +   '<div class="trend-insight-compact-main"><span class="trend-insight-a">A <span class="trend-insight-value">' + a4.toFixed(1) + '</span></span> vs <span class="trend-insight-b">B <span class="trend-insight-value">' + b4.toFixed(1) + '</span></span></div>'
-                        +   '<div class="trend-insight-compact-sub">' + compareText(a4, b4) + '</div>'
-                        + '</div>'
-                        + '<div class="trend-insight-item">'
-                        +   '<div class="trend-insight-title">24小时平均增速（条/小时）</div>'
-                        +   '<div class="trend-insight-compact-main"><span class="trend-insight-a">A <span class="trend-insight-value">' + a24.toFixed(1) + '</span></span> vs <span class="trend-insight-b">B <span class="trend-insight-value">' + b24.toFixed(1) + '</span></span></div>'
-                        +   '<div class="trend-insight-compact-sub">' + compareText(a24, b24) + '</div>'
-                        + '</div>'
-                        + '<div class="trend-insight-item">'
-                        +   '<div class="trend-insight-title">72小时平均增速（条/小时）</div>'
-                        +   '<div class="trend-insight-compact-main"><span class="trend-insight-a">A <span class="trend-insight-value">' + a72.toFixed(1) + '</span></span> vs <span class="trend-insight-b">B <span class="trend-insight-value">' + b72.toFixed(1) + '</span></span></div>'
-                        +   '<div class="trend-insight-compact-sub">' + compareText(a72, b72) + '</div>'
-                        + '</div>';
+                    var parts = [];
+                    parts.push('<div class="zld-data-table-panel"><div class="zld-data-table-scroll-main"><table class="zld-data-table table table-sm table-bordered mb-0"><thead><tr>');
+                    parts.push('<th class="zld-col-event text-nowrap">事件名称</th>');
+                    parts.push('<th class="text-nowrap text-center">4小时平均增速<small>（条/小时）</small></th>');
+                    parts.push('<th class="text-nowrap text-center">24小时平均增速<small>（条/小时）</small></th>');
+                    parts.push('<th class="text-nowrap text-center">72小时平均增速<small>（条/小时）</small></th>');
+                    parts.push('</tr></thead><tbody>');
+                    parts.push('<tr><th scope="row" class="zld-col-event text-nowrap">事件 A</th>');
+                    parts.push('<td class="text-center">' + escapeZldHtml(a4.toFixed(1)) + '</td>');
+                    parts.push('<td class="text-center">' + escapeZldHtml(a24.toFixed(1)) + '</td>');
+                    parts.push('<td class="text-center">' + escapeZldHtml(a72.toFixed(1)) + '</td>');
+                    parts.push('</tr>');
+                    parts.push('<tr><th scope="row" class="zld-col-event text-nowrap">事件 B</th>');
+                    parts.push('<td class="text-center">' + escapeZldHtml(b4.toFixed(1)) + '</td>');
+                    parts.push('<td class="text-center">' + escapeZldHtml(b24.toFixed(1)) + '</td>');
+                    parts.push('<td class="text-center">' + escapeZldHtml(b72.toFixed(1)) + '</td>');
+                    parts.push('</tr>');
+                    parts.push('</tbody></table></div><div class="zld-data-table-hscroll" aria-hidden="true"><div class="zld-data-table-hscroll-inner"></div></div></div>');
+                    el.innerHTML = parts.join('');
+                    bindZldConclusionHScroll();
                 }
 
                 function renderZldCompare(type) {
@@ -896,7 +1025,7 @@
                             }
                         ]
                     }, true);
-                    renderZldCompareInsights();
+                    renderZldConclusionList();
                     renderZldDataTable(type);
                 }
 
@@ -908,12 +1037,15 @@
 
                 window.addEventListener('resize', function () {
                     if (zldChart) zldChart.resize();
+                    syncZldConclusionHScrollWidth();
                     syncZldTableHScrollWidth();
                 });
 
                 function initZldCompareChart() {
                     if (window._zldCmpData) {
+                        bindZldDataToggle();
                         renderZldCompare('hour');
+                        setZldTableExpanded(false);
                     } else {
                         setTimeout(initZldCompareChart, 100);
                     }
@@ -1498,6 +1630,14 @@
                     A: [8420, 15630, 6280, 21540, 3870, 9320, 18760],
                     B: [6150, 11480, 4930, 17290, 5120, 7640, 14320]
                 };
+                var mediaGradA = {
+                    type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                    colorStops: [{ offset: 0, color: '#FFBA5E' }, { offset: 1, color: '#FE8301' }]
+                };
+                var mediaGradB = {
+                    type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                    colorStops: [{ offset: 0, color: '#A5B2D1' }, { offset: 1, color: '#6E81B3' }]
+                };
 
                 function renderMediaChart(viewType) {
                     var el = document.getElementById('mediaLevelChartMain');
@@ -1551,13 +1691,13 @@
                                     type: 'bar',
                                     data: mediaData.A,
                                     barGap: '18%',
-                                    itemStyle: { color: '#F6AB00', borderRadius: [3, 3, 0, 0] }
+                                    itemStyle: { color: mediaGradA, borderRadius: [3, 3, 0, 0] }
                                 },
                                 {
                                     name: '事件 B',
                                     type: 'bar',
                                     data: mediaData.B,
-                                    itemStyle: { color: '#6E81B3', borderRadius: [3, 3, 0, 0] }
+                                    itemStyle: { color: mediaGradB, borderRadius: [3, 3, 0, 0] }
                                 }
                             ]
                         };
@@ -1617,7 +1757,7 @@
                                     stack: 'total',
                                     data: stackRatioA,
                                     barMaxWidth: 56,
-                                    itemStyle: { color: '#F6AB00' },
+                                    itemStyle: { color: mediaGradA },
                                     label: {
                                         show: true,
                                         position: 'inside',
@@ -1632,7 +1772,7 @@
                                     stack: 'total',
                                     data: stackRatioB,
                                     barMaxWidth: 56,
-                                    itemStyle: { color: '#6E81B3', borderRadius: [3, 3, 0, 0] },
+                                    itemStyle: { color: mediaGradB, borderRadius: [3, 3, 0, 0] },
                                     label: {
                                         show: true,
                                         position: 'inside',
@@ -1914,7 +2054,13 @@
 
             <div id="activeAccountChartsWrap"></div>
             <div class="aac-same-toolbar">
-                <div class="aac-same-hint" id="aacSameHint" style="display:none;"><i class="fas fa-info-circle"></i>&nbsp;实心条形表示共同账号，纹理条形表示各自账号。</div>
+                <div class="aac-same-hint" id="aacSameHint" style="display:none;">
+                    <i class="fas fa-info-circle"></i>
+                    <span class="aac-hint-item"><span class="aac-hint-swatch aac-hint-swatch-solid"></span>实心条形表示共同账号</span>
+                    <span class="aac-hint-sep">，</span>
+                    <span class="aac-hint-item"><span class="aac-hint-swatch aac-hint-swatch-stripe"></span>纹理条形表示各自账号</span>
+                    <span>。</span>
+                </div>
                 <button type="button" class="btn btn-sm" id="aacSameHighlightBtn"><i class="fas fa-clone" aria-hidden="true"></i></button>
             </div>
 
@@ -2071,18 +2217,24 @@
                     if (aacPatternCache[color]) return aacPatternCache[color];
                     var canvas = document.createElement('canvas');
                     // 竖线密集度参数：单元越小（如 6/4）越密，越大（如 10/12）越疏
-                    canvas.width = 4;
-                    canvas.height = 4;
+                    canvas.width = 6;
+                    canvas.height = 6;
                     var ctx = canvas.getContext('2d');
                     if (ctx) {
-                        ctx.clearRect(0, 0, 8, 8);
+                        var bg = color === colorA ? 'rgba(246,171,0,0.22)' : 'rgba(110,129,179,0.22)';
+                        ctx.clearRect(0, 0, 6, 6);
+                        // 先铺一层浅色底，再叠加竖向纹理，形成“浅底+深纹”效果
+                        ctx.fillStyle = bg;
+                        ctx.fillRect(0, 0, 6, 6);
                         ctx.strokeStyle = color;
                         // 竖线粗细参数：值越大线越粗（视觉上更“密”）
-                        ctx.lineWidth = 1;
+                        ctx.lineWidth = 2;
                         ctx.beginPath();
                         // 竖线位置参数：可改为 1/2/3 等；如需更密可在同单元再画一根线
                         ctx.moveTo(1, 0);
-                        ctx.lineTo(1, 8);
+                        ctx.lineTo(1, 6);
+                        ctx.moveTo(4, 0);
+                        ctx.lineTo(4, 6);
                         ctx.stroke();
                     }
                     var pattern = { image: canvas, repeat: 'repeat' };
@@ -2092,13 +2244,13 @@
 
                 function getAacBarItemStyle(activeColor, isShared, sameHighlightOn) {
                     if (sameHighlightOn && isShared) {
-                        return { color: activeColor, borderRadius: [0, 1, 1, 0] };
+                        return { color: activeColor, borderRadius: [0, 2, 2, 0] };
                     }
                     return {
                         color: getStripePattern(activeColor),
                         borderColor: activeColor,
-                        borderWidth: 1,
-                        borderRadius: [0, 1, 1, 0]
+                        borderWidth: 0,
+                        borderRadius: [0, 2, 2, 0]
                     };
                 }
 
@@ -2889,7 +3041,7 @@
                         var typeText = d.shared ? '共同平台' : (d.onlyA ? 'A独有' : 'B独有');
                         return ''
                             + '<div class="group-row">'
-                            + '  <div class="group-label"><div class="group-name">' + d.name + '</div><div class="group-meta">' + typeText + '</div></div>'
+                            + '  <div class="group-label"><div class="group-name">' + d.name + '</div></div>'
                             + '  <div class="group-bars">'
                             + '    <span class="gridline" style="left:25%;"></span><span class="gridline" style="left:50%;"></span><span class="gridline" style="left:75%;"></span>'
                             + '    <div class="bar-line">' + (d.a > 0 ? '<div class="bar-fill ' + (d.onlyA ? 'only-a' : 'a') + '" style="width:' + aWidth + '%;"></div>' : '') + '<span class="bar-value outside" style="left:calc(' + aWidth + '% + 6px);right:auto;">' + (d.a ? formatNum(d.a) : '—') + '</span></div>'
@@ -2931,7 +3083,7 @@
                         var typeText = d.shared ? '共同平台' : (d.onlyA ? 'A独有' : 'B独有');
                         return ''
                             + '<div class="group-row">'
-                            + '  <div class="group-label"><div class="group-name">' + d.name + '</div><div class="group-meta">' + typeText + '</div></div>'
+                            + '  <div class="group-label"><div class="group-name">' + d.name + '</div></div>'
                             + '  <div class="group-bars">'
                             + '    <span class="gridline" style="left:25%;"></span><span class="gridline" style="left:50%;"></span><span class="gridline" style="left:75%;"></span>'
                             + '    <div class="bar-line">' + (d.ratioA > 0 ? '<div class="bar-fill ' + (d.onlyA ? 'only-a' : 'a') + '" style="width:' + aWidth + '%;"></div>' : '') + '<span class="bar-value outside" style="left:calc(' + aWidth + '% + 6px);right:auto;">' + (d.ratioA > 0 ? formatPercent(d.ratioA) : '—') + '</span></div>'
@@ -2990,343 +3142,6 @@
                 render();
             })();
             </script>
-        </div>
-
-        <!--✅ 扩散平台-->
-            <div class="card-1" id="anchor-platform-compare">
-            <div class="section-title">扩散平台</div>
-
-            <!-- 一级切换：发文量 / 发文占比 -->
-            <div class="trend-btn-group d-flex w-100 mb-3" id="platformCompareTab">
-                <button class="btn flex-fill active" data-ptype="vol">发文量</button>
-                <button class="btn flex-fill" data-ptype="ratio">发文占比</button>
-            </div>
-
-            <!-- 平台对比图区域：
-                 - 发文量视图：左右分别展示事件A/事件B
-                 - 发文占比视图：左右分别展示事件A/事件B -->
-            <div id="platformChartsWrap">
-                <div class="media-chart-col" id="platformVolPanel">
-                    <div class="d-flex" id="platformVolChartsRow" style="gap:12px;">
-                        <div class="media-chart-col">
-                            <div id="platformVolChartA"></div>
-                        </div>
-                        <div class="media-chart-col">
-                            <div id="platformVolChartB"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="media-chart-col" id="platformRatioPanel" style="display:none;">
-                    <div class="d-flex" id="platformRatioChartsRow" style="gap:12px;">
-                        <div class="media-chart-col">
-                            <div id="platformRatioChartA"></div>
-                        </div>
-                        <div class="media-chart-col">
-                            <div id="platformRatioChartB"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="platformSharedLegend"></div>
-
-            <script>
-            (function () {
-                // 图表实例（四张图：A/B 发文量 + A/B 占比）
-                var pVolChartA = null, pVolChartB = null, pRatioChartA = null, pRatioChartB = null;
-
-                // 平台维度与两个事件的发文量基数
-                var platforms = ['抖音', '新浪微博', '微信', '快手', '小红书', '哔哩哔哩', '今日头条', '百家号', '知乎'];
-                var volA = [32450, 28670, 24310, 18920, 15740, 12680, 9530, 7860, 5240];
-                var volB = [27830, 21540, 19870, 16350, 12460, 10920, 8170, 6540, 4320];
-
-                var colorA = '#F6AB00', colorB = '#6E81B3';
-
-                // 由发文量计算平台占比（保留 1 位小数）
-                var totalA = volA.reduce(function(s,v){ return s+v; }, 0);
-                var totalB = volB.reduce(function(s,v){ return s+v; }, 0);
-                var pctA = volA.map(function(v){ return parseFloat((v / totalA * 100).toFixed(1)); });
-                var pctB = volB.map(function(v){ return parseFloat((v / totalB * 100).toFixed(1)); });
-
-                // 统一生成 Y 轴（按平台倒序显示）
-                function makeYAxis(showLabel) {
-                    return {
-                        type: 'category',
-                        data: platforms.slice().reverse(),
-                        axisLine: { show: false },
-                        axisTick: { show: false },
-                        axisLabel: showLabel ? { color: '#444', fontSize: 11 } : { show: false }
-                    };
-                }
-
-                /* ── 渲染平台发文量对比（左右双图） ── */
-                function renderPlatformVol() {
-                    if (typeof echarts === 'undefined') return;
-                    var elA = document.getElementById('platformVolChartA');
-                    var elB = document.getElementById('platformVolChartB');
-                    if (elA && !pVolChartA) pVolChartA = echarts.init(elA);
-                    if (elB && !pVolChartB) pVolChartB = echarts.init(elB);
-
-                    var commonXAxis = {
-                        type: 'value',
-                        axisLine: { show: false },
-                        splitLine: { lineStyle: { color: '#f0f0f0' } },
-                        axisLabel: {
-                            color: '#666', fontSize: 10,
-                            formatter: function(v){ return v >= 10000 ? (v/10000).toFixed(0)+'万' : v; }
-                        }
-                    };
-
-                    if (pVolChartA) {
-                        pVolChartA.setOption({
-                            tooltip: {
-                                trigger: 'axis',
-                                axisPointer: { type: 'shadow' },
-                                formatter: function(params){
-                                    var p = params[0];
-                                    if (!p) return '';
-                                    return p.axisValue + '<br/>' + p.marker + '事件 A: ' + p.value.toLocaleString() + ' 篇';
-                                }
-                            },
-                            legend: { show: false },
-                            grid: { left: '2%', right: '8%', top: '2%', bottom: '4%', containLabel: true },
-                            xAxis: commonXAxis,
-                            yAxis: makeYAxis(true),
-                            series: [
-                                {
-                                    name: '事件 A',
-                                    type: 'bar',
-                                    data: volA.slice().reverse(),
-                                    barMaxWidth: 14,
-                                    itemStyle: { color: colorA, borderRadius: [0,3,3,0] },
-                                    label: {
-                                        show: true, position: 'right',
-                                        formatter: function(p){ return p.value >= 1000 ? (p.value/10000).toFixed(1)+'万' : p.value; },
-                                        color: '#888', fontSize: 10
-                                    }
-                                }
-                            ]
-                        }, true);
-                    }
-
-                    if (pVolChartB) {
-                        pVolChartB.setOption({
-                            tooltip: {
-                                trigger: 'axis',
-                                axisPointer: { type: 'shadow' },
-                                formatter: function(params){
-                                    var p = params[0];
-                                    if (!p) return '';
-                                    return p.axisValue + '<br/>' + p.marker + '事件 B: ' + p.value.toLocaleString() + ' 篇';
-                                }
-                            },
-                            legend: { show: false },
-                            grid: { left: '2%', right: '8%', top: '2%', bottom: '4%', containLabel: true },
-                            xAxis: commonXAxis,
-                            yAxis: makeYAxis(true),
-                            series: [
-                                {
-                                    name: '事件 B',
-                                    type: 'bar',
-                                    data: volB.slice().reverse(),
-                                    barMaxWidth: 14,
-                                    itemStyle: { color: colorB, borderRadius: [0,3,3,0] },
-                                    label: {
-                                        show: true, position: 'right',
-                                        formatter: function(p){ return p.value >= 1000 ? (p.value/10000).toFixed(1)+'万' : p.value; },
-                                        color: '#888', fontSize: 10
-                                    }
-                                }
-                            ]
-                        }, true);
-                    }
-                }
-
-                /* ── 渲染平台发文占比对比（左右双图） ── */
-                function renderPlatformRatio() {
-                    if (typeof echarts === 'undefined') return;
-                    var elA = document.getElementById('platformRatioChartA');
-                    var elB = document.getElementById('platformRatioChartB');
-                    if (elA && !pRatioChartA) pRatioChartA = echarts.init(elA);
-                    if (elB && !pRatioChartB) pRatioChartB = echarts.init(elB);
-
-                    var ratioMax = 0;
-                    for (var i = 0; i < pctA.length; i++) {
-                        if (pctA[i] > ratioMax) ratioMax = pctA[i];
-                        if (pctB[i] > ratioMax) ratioMax = pctB[i];
-                    }
-                    ratioMax = Math.ceil(ratioMax / 5) * 5 + 2;
-
-                    var commonXAxis = {
-                        type: 'value',
-                        max: ratioMax,
-                        axisLine: { show: false },
-                        splitLine: { lineStyle: { color: '#f0f0f0' } },
-                        axisLabel: { formatter: '{value}%', color: '#666', fontSize: 10 }
-                    };
-
-                    if (pRatioChartA) {
-                        pRatioChartA.setOption({
-                            tooltip: {
-                                trigger: 'axis',
-                                axisPointer: { type: 'shadow' },
-                                formatter: function(params){
-                                    var p = params[0];
-                                    if (!p) return '';
-                                    return p.axisValue + '<br/>' + p.marker + '事件 A: ' + p.value + '%';
-                                }
-                            },
-                            legend: { show: false },
-                            grid: { left: '0%', right: '8%', top: '2%', bottom: '4%', containLabel: true },
-                            xAxis: commonXAxis,
-                            yAxis: makeYAxis(true),
-                            series: [
-                                {
-                                    name: '事件 A',
-                                    type: 'bar',
-                                    data: pctA.slice().reverse(),
-                                    barMaxWidth: 14,
-                                    itemStyle: { color: colorA, borderRadius: [0,3,3,0] },
-                                    label: { show: true, position: 'right', formatter: '{c}%', color: '#888', fontSize: 10 }
-                                }
-                            ]
-                        }, true);
-                    }
-
-                    if (pRatioChartB) {
-                        pRatioChartB.setOption({
-                            tooltip: {
-                                trigger: 'axis',
-                                axisPointer: { type: 'shadow' },
-                                formatter: function(params){
-                                    var p = params[0];
-                                    if (!p) return '';
-                                    return p.axisValue + '<br/>' + p.marker + '事件 B: ' + p.value + '%';
-                                }
-                            },
-                            legend: { show: false },
-                            grid: { left: '0%', right: '8%', top: '2%', bottom: '4%', containLabel: true },
-                            xAxis: commonXAxis,
-                            yAxis: makeYAxis(true),
-                            series: [
-                                {
-                                    name: '事件 B',
-                                    type: 'bar',
-                                    data: pctB.slice().reverse(),
-                                    barMaxWidth: 14,
-                                    itemStyle: { color: colorB, borderRadius: [0,3,3,0] },
-                                    label: { show: true, position: 'right', formatter: '{c}%', color: '#888', fontSize: 10 }
-                                }
-                            ]
-                        }, true);
-                    }
-                }
-
-                /* ── 共享图例：控制事件A/事件B在四张图中的显隐 ── */
-                var pLegendState = { '事件 A': true, '事件 B': true };
-                var pLegendColors = { '事件 A': colorA, '事件 B': colorB };
-                var currentPlatformView = 'vol';
-
-                // 图例点击后，同步切换四张图对应系列显示状态
-                function pToggleLegend(name) {
-                    pLegendState[name] = !pLegendState[name];
-                    [pVolChartA, pVolChartB, pRatioChartA, pRatioChartB].forEach(function(c){
-                        if (c) c.dispatchAction({ type: 'legendToggleSelect', name: name });
-                    });
-                    pUpdateLegendUI();
-                }
-
-                // 刷新图例选中态透明度
-                function pUpdateLegendUI() {
-                    var el = document.getElementById('platformSharedLegend');
-                    if (!el) return;
-                    var items = el.querySelectorAll('[data-legend]');
-                    for (var i = 0; i < items.length; i++) {
-                        var n = items[i].getAttribute('data-legend');
-                        items[i].style.opacity = pLegendState[n] ? '1' : '0.35';
-                    }
-                }
-
-                // 发文量/发文占比视图切换（按钮状态 + 面板显隐 + resize）
-                function switchPlatformView(type) {
-                    currentPlatformView = type;
-                    var volPanel = document.getElementById('platformVolPanel');
-                    var ratioPanel = document.getElementById('platformRatioPanel');
-                    if (volPanel && ratioPanel) {
-                        volPanel.style.display = (type === 'vol') ? '' : 'none';
-                        ratioPanel.style.display = (type === 'ratio') ? '' : 'none';
-                    }
-                    var tab = document.getElementById('platformCompareTab');
-                    if (tab) {
-                        tab.querySelectorAll('button[data-ptype]').forEach(function(btn){
-                            btn.classList.toggle('active', btn.getAttribute('data-ptype') === type);
-                        });
-                    }
-                    if (type === 'vol') {
-                        if (pVolChartA) pVolChartA.resize();
-                        if (pVolChartB) pVolChartB.resize();
-                    }
-                    if (type === 'ratio') {
-                        if (pRatioChartA) pRatioChartA.resize();
-                        if (pRatioChartB) pRatioChartB.resize();
-                    }
-                }
-
-                // 渲染平台模块共享图例 DOM
-                function renderPlatformLegend() {
-                    var el = document.getElementById('platformSharedLegend');
-                    if (!el) return;
-                    var names = ['事件 A', '事件 B'];
-                    var html = '';
-                    for (var i = 0; i < names.length; i++) {
-                        html += '<span data-legend="' + names[i] + '" style="display:inline-flex;align-items:center;gap:3px;white-space:nowrap;cursor:pointer;user-select:none;">'
-                            + '<span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:' + pLegendColors[names[i]] + ';"></span>'
-                            + '<span style="font-size:10px;color:#666;">' + names[i] + '</span>'
-                            + '</span>';
-                    }
-                    el.innerHTML = html;
-                    var items = el.querySelectorAll('[data-legend]');
-                    for (var j = 0; j < items.length; j++) {
-                        items[j].addEventListener('click', (function(name){ return function(){ pToggleLegend(name); }; })(names[j]));
-                    }
-                }
-
-                // 窗口变化时更新四张图尺寸
-                window.addEventListener('resize', function(){
-                    if (pVolChartA) pVolChartA.resize();
-                    if (pVolChartB) pVolChartB.resize();
-                    if (pRatioChartA) pRatioChartA.resize();
-                    if (pRatioChartB) pRatioChartB.resize();
-                });
-
-                // 模块初始化：图例、图表、按钮事件、默认视图
-                function initPlatformCharts() {
-                    if (typeof echarts !== 'undefined') {
-                        renderPlatformLegend();
-                        renderPlatformVol();
-                        renderPlatformRatio();
-                        var tab = document.getElementById('platformCompareTab');
-                        if (tab) {
-                            tab.querySelectorAll('button[data-ptype]').forEach(function(btn){
-                                btn.addEventListener('click', function(){
-                                    var t = btn.getAttribute('data-ptype');
-                                    if (t) switchPlatformView(t);
-                                });
-                            });
-                        }
-                        switchPlatformView(currentPlatformView);
-                    } else {
-                        setTimeout(initPlatformCharts, 100);
-                    }
-                }
-
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', initPlatformCharts);
-                } else {
-                    initPlatformCharts();
-                }
-            })();
-            </script>
-
         </div>
 
         <!--✅ 首发速度-->
@@ -4309,7 +4124,7 @@ http://stock.10jqka.com.cn/20260225/c674892316.shtml
             <a href="#anchor-media-type-ratio" class="compare-module-link" data-target="anchor-media-type-ratio">媒体类型占比</a>
             <a href="#anchor-active-account-compare" class="compare-module-link" data-target="anchor-active-account-compare">活跃账号</a>
             <a href="#anchor-media-cat-compare" class="compare-module-link" data-target="anchor-media-cat-compare">媒体类别</a>
-            <a href="#anchor-platform-compare" class="compare-module-link" data-target="anchor-platform-compare">扩散平台</a>
+            <a href="#anchor-diffusion-structure" class="compare-module-link" data-target="anchor-diffusion-structure">扩散结构</a>
             <a href="#anchor-first-publish-speed" class="compare-module-link" data-target="anchor-first-publish-speed">首发速度</a>
             <a href="#anchor-channel-compare" class="compare-module-link" data-target="anchor-channel-compare">扩散渠道</a>
             <a href="#anchor-wordcloud-compare" class="compare-module-link" data-target="anchor-wordcloud-compare">高频词</a>
@@ -4332,7 +4147,7 @@ http://stock.10jqka.com.cn/20260225/c674892316.shtml
             <a href="#anchor-media-type-ratio" class="compare-module-link" data-target="anchor-media-type-ratio">媒体类型占比</a>
             <a href="#anchor-active-account-compare" class="compare-module-link" data-target="anchor-active-account-compare">活跃账号</a>
             <a href="#anchor-media-cat-compare" class="compare-module-link" data-target="anchor-media-cat-compare">媒体类别</a>
-            <a href="#anchor-platform-compare" class="compare-module-link" data-target="anchor-platform-compare">扩散平台</a>
+            <a href="#anchor-diffusion-structure" class="compare-module-link" data-target="anchor-diffusion-structure">扩散结构</a>
             <a href="#anchor-first-publish-speed" class="compare-module-link" data-target="anchor-first-publish-speed">首发速度</a>
             <a href="#anchor-channel-compare" class="compare-module-link" data-target="anchor-channel-compare">扩散渠道</a>
             <a href="#anchor-wordcloud-compare" class="compare-module-link" data-target="anchor-wordcloud-compare">高频词</a>
