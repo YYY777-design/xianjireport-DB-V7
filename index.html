@@ -2898,31 +2898,32 @@
 
         <!--✅ 扩散平台-->
         <div class="card-1" id="anchor-diffusion-structure">
-            <div class="section-title">扩散平台</div>
-
             <div class="diffstruct">
+                <div class="diffstruct-title-row">
+                    <div class="section-title">扩散平台</div>
+                </div>
                 <div class="topbar">
                     <div class="trend-btn-group d-flex w-100 ds-row-1" data-role="mode-row">
-                        <button type="button" class="btn flex-fill active" data-ds-mode="volume">发文量占比</button>
-                        <button type="button" class="btn flex-fill" data-ds-mode="ratio">发文占比结构</button>
+                        <button type="button" class="btn flex-fill active" data-ds-mode="volume">发文量</button>
+                        <button type="button" class="btn flex-fill" data-ds-mode="ratio">发文占比</button>
                     </div>
-                    <div class="media-cat-trend-filters-wrap">
-                        <div class="media-cat-trend-filters ds-row-2" data-role="sub-row">
-                            <button type="button" class="btn btn-sm active" data-ds-filter="all">全部平台</button>
-                            <button type="button" class="btn btn-sm" data-ds-filter="shared">共同平台</button>
-                            <select class="ds-sort-select" data-role="sort-select">
-                                <option value="delta">按差异排序</option>
-                                <option value="sum">按总量排序</option>
-                                <option value="a">按事件A排序</option>
-                                <option value="b">按事件B排序</option>
-                                <option value="name">按平台名称</option>
-                            </select>
+                    <div class="media-cat-trend-filters-wrap ds-sort-scroll">
+                        <div class="media-cat-trend-filters ds-row-2 ds-sort-row" data-role="sort-row">
+                            <button type="button" class="btn btn-sm active" data-ds-sort="delta">按差异</button>
+                            <button type="button" class="btn btn-sm" data-ds-sort="sum">按总量</button>
+                            <button type="button" class="btn btn-sm" data-ds-sort="a">按事件A</button>
+                            <button type="button" class="btn btn-sm" data-ds-sort="b">按事件B</button>
+                            <button type="button" class="btn btn-sm" data-ds-sort="name">按平台名称</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="content">
                     <div>
+                        <div class="ds-weak-filter" data-role="sub-row">
+                            <button type="button" class="btn btn-sm active" data-ds-filter="all">全部平台</button>
+                            <button type="button" class="btn btn-sm" data-ds-filter="shared">共同平台</button>
+                        </div>
                         <div class="card cluster-card" data-role="volume-card">
                             <div class="group-rows" data-role="cluster-rows"></div>
                             <div class="group-header" style="display:none;">
@@ -3036,8 +3037,9 @@
                     }).join('');
 
                     rows.innerHTML = data.map(function (d) {
-                        var aWidth = d.a > 0 ? (d.a / maxVal * 100).toFixed(1) : 0;
-                        var bWidth = d.b > 0 ? (d.b / maxVal * 100).toFixed(1) : 0;
+                        var maxBarPct = 85;
+                        var aWidth = d.a > 0 ? (d.a / maxVal * maxBarPct).toFixed(1) : 0;
+                        var bWidth = d.b > 0 ? (d.b / maxVal * maxBarPct).toFixed(1) : 0;
                         var typeText = d.shared ? '共同平台' : (d.onlyA ? 'A独有' : 'B独有');
                         return ''
                             + '<div class="group-row">'
@@ -3130,13 +3132,14 @@
                     });
                 });
 
-                var sortSelect = wrap.querySelector('[data-role="sort-select"]');
-                if (sortSelect) {
-                    sortSelect.addEventListener('change', function (e) {
-                        currentSort = e.target.value;
+                wrap.querySelectorAll('[data-ds-sort]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        wrap.querySelectorAll('[data-ds-sort]').forEach(function (x) { x.classList.remove('active'); });
+                        btn.classList.add('active');
+                        currentSort = btn.getAttribute('data-ds-sort');
                         render();
                     });
-                }
+                });
 
                 window.addEventListener('resize', switchMode);
                 render();
