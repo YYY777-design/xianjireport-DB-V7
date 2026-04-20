@@ -2056,9 +2056,9 @@
             <div class="aac-same-toolbar">
                 <div class="aac-same-hint" id="aacSameHint" style="display:none;">
                     <i class="fas fa-info-circle"></i>
-                    <span class="aac-hint-item"><span class="aac-hint-swatch aac-hint-swatch-solid"></span>实心条形表示共同账号</span>
-                    <span class="aac-hint-sep">，</span>
-                    <span class="aac-hint-item"><span class="aac-hint-swatch aac-hint-swatch-stripe"></span>纹理条形表示各自账号</span>
+                    <span class="aac-hint-item">实心条形(<span class="aac-hint-swatch aac-hint-swatch-solid"></span>)表示共同账号</span>
+                    <span class="aac-hint-sep">,</span>
+                    <span class="aac-hint-item">纹理条形(<span class="aac-hint-swatch aac-hint-swatch-stripe"></span>)表示各自账号</span>
                     <span>。</span>
                 </div>
                 <button type="button" class="btn btn-sm" id="aacSameHighlightBtn"><i class="fas fa-clone" aria-hidden="true"></i></button>
@@ -2901,29 +2901,58 @@
             <div class="diffstruct">
                 <div class="diffstruct-title-row">
                     <div class="section-title">扩散平台</div>
+                    <div class="diffstruct-help-wrap" id="diffstructHelpWrap">
+                        <button type="button" class="diffstruct-help-btn" id="diffstructHelpBtn" aria-label="扩散平台排序帮助" aria-expanded="false">
+                            <i class="fas fa-question" aria-hidden="true"></i>
+                        </button>
+                        <div class="diffstruct-help-pop" id="diffstructHelpPop" aria-hidden="true">
+                            <div class="diffstruct-help-title">排序说明</div>
+                            <div class="diffstruct-help-item">
+                                <div class="diffstruct-help-item-title">按差异排序</div>
+                                <div class="diffstruct-help-item-desc">按事件 A 与事件 B 在各平台上的数值差距从大到小排序，优先查看差异最明显的平台。</div>
+                            </div>
+                            <div class="diffstruct-help-item">
+                                <div class="diffstruct-help-item-title">按总量排序</div>
+                                <div class="diffstruct-help-item-desc">按两个事件在各平台发文量合计从高到低排序，优先查看整体声量最高的平台。</div>
+                            </div>
+                            <div class="diffstruct-help-item">
+                                <div class="diffstruct-help-item-title">按事件A排序</div>
+                                <div class="diffstruct-help-item-desc">按事件 A 在各平台的发文量或占比从高到低排序，用于查看事件 A 的主要扩散平台。</div>
+                            </div>
+                            <div class="diffstruct-help-item">
+                                <div class="diffstruct-help-item-title">按事件B排序</div>
+                                <div class="diffstruct-help-item-desc">按事件 B 在各平台的发文量或占比从高到低排序，用于查看事件 B 的主要扩散平台。</div>
+                            </div>
+                            <div class="diffstruct-help-item">
+                                <div class="diffstruct-help-item-title">按平台名称</div>
+                                <div class="diffstruct-help-item-desc">按平台名称顺序排序，便于快速查找指定平台并进行对照查看。</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="topbar">
                     <div class="trend-btn-group d-flex w-100 ds-row-1" data-role="mode-row">
                         <button type="button" class="btn flex-fill active" data-ds-mode="volume">发文量</button>
                         <button type="button" class="btn flex-fill" data-ds-mode="ratio">发文占比</button>
                     </div>
-                    <div class="media-cat-trend-filters-wrap ds-sort-scroll">
-                        <div class="media-cat-trend-filters ds-row-2 ds-sort-row" data-role="sort-row">
-                            <button type="button" class="btn btn-sm active" data-ds-sort="delta">按差异</button>
-                            <button type="button" class="btn btn-sm" data-ds-sort="sum">按总量</button>
-                            <button type="button" class="btn btn-sm" data-ds-sort="a">按事件A</button>
-                            <button type="button" class="btn btn-sm" data-ds-sort="b">按事件B</button>
-                            <button type="button" class="btn btn-sm" data-ds-sort="name">按平台名称</button>
+                    <div class="ds-sort-line">
+                        <div class="media-cat-trend-filters-wrap ds-sort-scroll">
+                            <div class="media-cat-trend-filters ds-row-2 ds-sort-row" data-role="sort-row">
+                                <button type="button" class="btn btn-sm active" data-ds-sort="delta">按差异</button>
+                                <button type="button" class="btn btn-sm" data-ds-sort="sum">按总量</button>
+                                <button type="button" class="btn btn-sm" data-ds-sort="a">按事件A</button>
+                                <button type="button" class="btn btn-sm" data-ds-sort="b">按事件B</button>
+                                <button type="button" class="btn btn-sm" data-ds-sort="name">按平台名称</button>
+                            </div>
+                        </div>
+                        <div class="ds-weak-filter" data-role="sub-row">
+                            <button type="button" class="btn btn-sm" data-ds-filter-toggle="shared" aria-pressed="false"><span class="ds-switch-label">共同平台</span><span class="ds-switch-ui" aria-hidden="true"><span class="ds-switch-knob"></span></span></button>
                         </div>
                     </div>
                 </div>
 
                 <div class="content">
                     <div>
-                        <div class="ds-weak-filter" data-role="sub-row">
-                            <button type="button" class="btn btn-sm active" data-ds-filter="all">全部平台</button>
-                            <button type="button" class="btn btn-sm" data-ds-filter="shared">共同平台</button>
-                        </div>
                         <div class="card cluster-card" data-role="volume-card">
                             <div class="group-rows" data-role="cluster-rows"></div>
                             <div class="group-header" style="display:none;">
@@ -2952,6 +2981,9 @@
                 if (!root) return;
                 var wrap = root.querySelector('.diffstruct');
                 if (!wrap) return;
+                var helpWrap = document.getElementById('diffstructHelpWrap');
+                var helpBtn = document.getElementById('diffstructHelpBtn');
+                var helpPop = document.getElementById('diffstructHelpPop');
 
                 var baseData = [
                     { name: '抖音', a: 32000, b: 28000 },
@@ -3108,6 +3140,31 @@
                     mobileList.style.display = 'none';
                 }
 
+                function bindDiffstructHelp() {
+                    if (!helpWrap || !helpBtn || !helpPop) return;
+                    function setOpen(open) {
+                        helpWrap.classList.toggle('is-open', !!open);
+                        helpBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                        helpPop.setAttribute('aria-hidden', open ? 'false' : 'true');
+                    }
+                    helpBtn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setOpen(!helpWrap.classList.contains('is-open'));
+                    });
+                    helpPop.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                    });
+                    document.addEventListener('click', function (e) {
+                        if (!helpWrap.classList.contains('is-open')) return;
+                        if (helpWrap.contains(e.target)) return;
+                        setOpen(false);
+                    });
+                    document.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape') setOpen(false);
+                    });
+                }
+
                 function render() {
                     renderCluster();
                     renderRatio();
@@ -3123,14 +3180,16 @@
                     });
                 });
 
-                wrap.querySelectorAll('[data-ds-filter]').forEach(function (btn) {
-                    btn.addEventListener('click', function () {
-                        wrap.querySelectorAll('[data-ds-filter]').forEach(function (x) { x.classList.remove('active'); });
-                        btn.classList.add('active');
-                        currentFilter = btn.getAttribute('data-ds-filter');
+                var sharedToggleBtn = wrap.querySelector('[data-ds-filter-toggle="shared"]');
+                if (sharedToggleBtn) {
+                    sharedToggleBtn.addEventListener('click', function () {
+                        var nextIsShared = currentFilter !== 'shared';
+                        currentFilter = nextIsShared ? 'shared' : 'all';
+                        sharedToggleBtn.classList.toggle('active', nextIsShared);
+                        sharedToggleBtn.setAttribute('aria-pressed', nextIsShared ? 'true' : 'false');
                         render();
                     });
-                });
+                }
 
                 wrap.querySelectorAll('[data-ds-sort]').forEach(function (btn) {
                     btn.addEventListener('click', function () {
@@ -3141,6 +3200,7 @@
                     });
                 });
 
+                bindDiffstructHelp();
                 window.addEventListener('resize', switchMode);
                 render();
             })();
