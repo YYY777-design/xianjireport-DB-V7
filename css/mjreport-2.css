@@ -289,10 +289,10 @@ body
 
 .compare-floating-bar .compare-dot
 {
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     border-radius: 3px;
-    flex-basis: 10px;
+    flex-basis: 15px;
 }
 
 .compare-floating-bar .compare-text-short
@@ -4607,7 +4607,19 @@ label
 
     .bic-title-value
     {
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        text-overflow: ellipsis;
+        cursor: pointer;
+    }
+
+    .bic-title-value.is-expanded
+    {
+        display: block;
+        -webkit-line-clamp: unset;
+        line-clamp: unset;
+        -webkit-box-orient: initial;
+        overflow: visible;
     }
 
     .card-download-footer
@@ -6596,6 +6608,18 @@ label
     background-color: #fff;
     font-size: 12px;
     line-height: 30px;
+}
+.diffstruct .ds-sort-select:focus,
+.diffstruct .ds-sort-select:focus-visible {
+    border-color: #F6AB00;
+    outline: none;
+    box-shadow: 0 0 0 1px #F6AB00;
+}
+.diffstruct .ds-sort-select option:hover,
+.diffstruct .ds-sort-select option:focus,
+.diffstruct .ds-sort-select option:checked {
+    background: #F6AB00;
+    color: #fff;
 }
 
 /* 卡片与图表区 */

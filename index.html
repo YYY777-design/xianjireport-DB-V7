@@ -2896,9 +2896,9 @@
 
         </div>
 
-        <!--✅ 扩散结构-->
+        <!--✅ 扩散平台-->
         <div class="card-1" id="anchor-diffusion-structure">
-            <div class="section-title">扩散结构</div>
+            <div class="section-title">扩散平台</div>
 
             <div class="diffstruct">
                 <div class="topbar">
@@ -4124,7 +4124,7 @@ http://stock.10jqka.com.cn/20260225/c674892316.shtml
             <a href="#anchor-media-type-ratio" class="compare-module-link" data-target="anchor-media-type-ratio">媒体类型占比</a>
             <a href="#anchor-active-account-compare" class="compare-module-link" data-target="anchor-active-account-compare">活跃账号</a>
             <a href="#anchor-media-cat-compare" class="compare-module-link" data-target="anchor-media-cat-compare">媒体类别</a>
-            <a href="#anchor-diffusion-structure" class="compare-module-link" data-target="anchor-diffusion-structure">扩散结构</a>
+            <a href="#anchor-diffusion-structure" class="compare-module-link" data-target="anchor-diffusion-structure">扩散平台</a>
             <a href="#anchor-first-publish-speed" class="compare-module-link" data-target="anchor-first-publish-speed">首发速度</a>
             <a href="#anchor-channel-compare" class="compare-module-link" data-target="anchor-channel-compare">扩散渠道</a>
             <a href="#anchor-wordcloud-compare" class="compare-module-link" data-target="anchor-wordcloud-compare">高频词</a>
@@ -4147,7 +4147,7 @@ http://stock.10jqka.com.cn/20260225/c674892316.shtml
             <a href="#anchor-media-type-ratio" class="compare-module-link" data-target="anchor-media-type-ratio">媒体类型占比</a>
             <a href="#anchor-active-account-compare" class="compare-module-link" data-target="anchor-active-account-compare">活跃账号</a>
             <a href="#anchor-media-cat-compare" class="compare-module-link" data-target="anchor-media-cat-compare">媒体类别</a>
-            <a href="#anchor-diffusion-structure" class="compare-module-link" data-target="anchor-diffusion-structure">扩散结构</a>
+            <a href="#anchor-diffusion-structure" class="compare-module-link" data-target="anchor-diffusion-structure">扩散平台</a>
             <a href="#anchor-first-publish-speed" class="compare-module-link" data-target="anchor-first-publish-speed">首发速度</a>
             <a href="#anchor-channel-compare" class="compare-module-link" data-target="anchor-channel-compare">扩散渠道</a>
             <a href="#anchor-wordcloud-compare" class="compare-module-link" data-target="anchor-wordcloud-compare">高频词</a>
@@ -4761,6 +4761,63 @@ http://stock.10jqka.com.cn/20260225/c674892316.shtml
             } else {
                 updateFloatingNavState();
             }
+        })();
+    </script>
+
+    <script>
+        (function () {
+            // 移动端：基础信息标题默认两行省略，点击后展开/收起完整标题
+            const basicInfo = document.getElementById('anchor-basic-info');
+            if (!basicInfo) return;
+
+            const titleNodes = basicInfo.querySelectorAll('.bic-title-value');
+            if (!titleNodes.length) return;
+
+            const mobileQuery = window.matchMedia('(max-width: 991px)');
+
+            function isMobile() {
+                return mobileQuery.matches;
+            }
+
+            function syncTitleState() {
+                titleNodes.forEach(function (node) {
+                    node.classList.remove('is-expanded');
+                    if (isMobile()) {
+                        node.setAttribute('role', 'button');
+                        node.setAttribute('tabindex', '0');
+                        node.setAttribute('aria-expanded', 'false');
+                    } else {
+                        node.removeAttribute('role');
+                        node.removeAttribute('tabindex');
+                        node.removeAttribute('aria-expanded');
+                    }
+                });
+            }
+
+            function toggleTitle(node) {
+                if (!isMobile()) return;
+                const expanded = node.classList.toggle('is-expanded');
+                node.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            }
+
+            titleNodes.forEach(function (node) {
+                node.addEventListener('click', function () {
+                    toggleTitle(node);
+                });
+                node.addEventListener('keydown', function (e) {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    e.preventDefault();
+                    toggleTitle(node);
+                });
+            });
+
+            if (mobileQuery.addEventListener) {
+                mobileQuery.addEventListener('change', syncTitleState);
+            } else if (mobileQuery.addListener) {
+                mobileQuery.addListener(syncTitleState);
+            }
+
+            syncTitleState();
         })();
     </script>
 
