@@ -6869,7 +6869,7 @@ label
         transform: translateX(-50%);
         width: min(360px, calc(100vw - 24px));
     }
-    .diffstruct .ds-row-2 { min-width: 600px; }
+    .diffstruct .ds-row-2 { min-width: 400px; }
     .diffstruct .ds-row-2 [data-ds-sort] { font-size: 12px; }
     /* 移动端条形图形态与 PC 保持一致 */
     .diffstruct .card { padding: 14px 0px 16px 0px; border-radius: 14px; }
