@@ -2226,11 +2226,6 @@ label
         border-radius: 2px;
     }
 
-.chart-legend
-{
-    /* padding-left: 16px;*/
-}
-
 .legend-item
 {
     display: flex;
@@ -2574,11 +2569,6 @@ label
     text-decoration: none;
     color: #000;
     transition: background-color 0.2s;
-}
-
-.new-info-list .main-info-card:hover
-{
-    /*background-color: #fff0e0;*/
 }
 
 .new-info-list .info-index
@@ -4958,12 +4948,6 @@ label
    ======================================== */
 
 /* 外层容器：与上方账号行保持分隔 */
-.yqdc-mtype-wrap
-{
-   /* padding-top: 18px;*/
-    
-}
-
 /* 标题行 */
 .yqdc-mtype-header
 {
@@ -7116,6 +7100,33 @@ label
 #anchor-first-publish-speed .first-speed-chart-wrap
 {
     position: relative;
+}
+
+#anchor-first-publish-speed .first-speed-wave-desc
+{
+    position: absolute;
+    right: 12px;
+    bottom: 0px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #888;
+    line-height: 1.2;
+    text-align: right;
+    pointer-events: none;
+}
+
+#anchor-first-publish-speed .first-speed-wave-icon
+{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    background: rgba(246,171,0,0.24);
+    border: 1px solid rgba(246,171,0,0.55);
+    box-shadow: 0 0 0 2px rgba(246,171,0,0.16);
+    flex: 0 0 10px;
 }
 
 #anchor-first-publish-speed .first-speed-corner-desc

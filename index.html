@@ -2117,79 +2117,79 @@
                     央级: {
                         A: [
                             { name:'央视新闻', type:'原', val:312 },
-                            { name:'人民日报', type:'原', val:287 },
-                            { name:'新华社',   type:'原', val:254 },
+                            { name:'人民日报', type:'转', val:287 },
+                            { name:'新华社',   type:'转', val:254 },
                             { name:'中国之声', type:'转', val:198 },
                             { name:'央广网',   type:'转', val:176 },
-                            { name:'光明日报', type:'原', val:152 },
+                            { name:'光明日报', type:'转', val:152 },
                             { name:'中国日报', type:'转', val:134 },
                             { name:'经济日报', type:'转', val:118 },
-                            { name:'科技日报', type:'原', val:97  },
+                            { name:'科技日报', type:'转', val:97  },
                             { name:'中国青年报',type:'转',val:85  }
                         ],
                         B: [
                             { name:'央视新闻', type:'原', val:278 },
-                            { name:'新华社',   type:'原', val:243 },
-                            { name:'人民日报', type:'原', val:215 },
+                            { name:'新华社',   type:'转', val:243 },
+                            { name:'人民日报', type:'转', val:215 },
                             { name:'中国之声', type:'转', val:184 },
-                            { name:'光明日报', type:'原', val:163 },
+                            { name:'光明日报', type:'转', val:163 },
                             { name:'央广网',   type:'转', val:148 },
                             { name:'经济日报', type:'转', val:126 },
                             { name:'中国日报', type:'转', val:109 },
                             { name:'中国青年报',type:'转',val:93  },
-                            { name:'科技日报', type:'原', val:74  }
+                            { name:'科技日报', type:'转', val:74  }
                         ]
                     },
                     省级: {
                         A: [
                             { name:'南方日报', type:'原', val:228 },
-                            { name:'浙江日报', type:'原', val:204 },
+                            { name:'浙江日报', type:'转', val:204 },
                             { name:'北京日报', type:'转', val:187 },
-                            { name:'上海发布', type:'原', val:173 },
+                            { name:'上海发布', type:'转', val:173 },
                             { name:'湖南日报', type:'转', val:155 },
-                            { name:'四川日报', type:'原', val:142 },
+                            { name:'四川日报', type:'转', val:142 },
                             { name:'河南日报', type:'转', val:128 },
                             { name:'山东发布', type:'转', val:114 },
-                            { name:'广东发布', type:'原', val:98  },
-                            { name:'江苏发布', type:'原', val:86  }
+                            { name:'广东发布', type:'转', val:98  },
+                            { name:'江苏发布', type:'转', val:86  }
                         ],
                         B: [
                             { name:'浙江日报', type:'原', val:215 },
-                            { name:'南方日报', type:'原', val:196 },
-                            { name:'上海发布', type:'原', val:178 },
+                            { name:'南方日报', type:'转', val:196 },
+                            { name:'上海发布', type:'转', val:178 },
                             { name:'北京日报', type:'转', val:162 },
-                            { name:'四川日报', type:'原', val:148 },
+                            { name:'四川日报', type:'转', val:148 },
                             { name:'湖南日报', type:'转', val:133 },
-                            { name:'广东发布', type:'原', val:117 },
+                            { name:'广东发布', type:'转', val:117 },
                             { name:'山东发布', type:'转', val:103 },
                             { name:'河南日报', type:'转', val:89  },
-                            { name:'江苏发布', type:'原', val:74  }
+                            { name:'江苏发布', type:'转', val:74  }
                         ]
                     },
                     商业: {
                         A: [
                             { name:'新浪财经', type:'原', val:534 },
-                            { name:'同花顺',   type:'原', val:498 },
+                            { name:'同花顺',   type:'转', val:498 },
                             { name:'东方财富', type:'转', val:463 },
                             { name:'证券之星', type:'转', val:421 },
-                            { name:'财联社',   type:'原', val:387 },
-                            { name:'界面新闻', type:'原', val:356 },
+                            { name:'财联社',   type:'转', val:387 },
+                            { name:'界面新闻', type:'转', val:356 },
                             { name:'36氪',    type:'转', val:324 },
                             { name:'虎嗅',    type:'转', val:298 },
-                            { name:'钛媒体',  type:'原', val:267 },
+                            { name:'钛媒体',  type:'转', val:267 },
                             { name:'第一财经', type:'转', val:241 }
                         ],
                         B: [
                             { name:'东方财富', type:'原', val:487 },
-                            { name:'新浪财经', type:'原', val:452 },
-                            { name:'财联社',   type:'原', val:418 },
+                            { name:'新浪财经', type:'转', val:452 },
+                            { name:'财联社',   type:'转', val:418 },
                             { name:'同花顺',   type:'转', val:383 },
-                            { name:'界面新闻', type:'原', val:349 },
+                            { name:'界面新闻', type:'转', val:349 },
                             { name:'第一财经', type:'转', val:315 },
                             { name:'36氪',    type:'转', val:286 },
-                            { name:'钛媒体',  type:'原', val:254 },
+                            { name:'钛媒体',  type:'转', val:254 },
                             { name:'证券之星', type:'转', val:223 },
-                            { name:'虎嗅',    type:'原', val:197 }
+                            { name:'虎嗅',    type:'转', val:197 }
                         ]
                     }
                 };
@@ -3053,6 +3053,7 @@
                     return v + '%';
                 }
 
+                // 发文量视图：构建横向双条列表（A/B）并同步顶部刻度与移动端列表
                 function renderCluster() {
                     var rows = wrap.querySelector('[data-role="cluster-rows"]');
                     var axisTop = wrap.querySelector('[data-role="group-axis-top"]');
@@ -3072,7 +3073,6 @@
                         var maxBarPct = 85;
                         var aWidth = d.a > 0 ? (d.a / maxVal * maxBarPct).toFixed(1) : 0;
                         var bWidth = d.b > 0 ? (d.b / maxVal * maxBarPct).toFixed(1) : 0;
-                        var typeText = d.shared ? '共同平台' : (d.onlyA ? 'A独有' : 'B独有');
                         return ''
                             + '<div class="group-row">'
                             + '  <div class="group-label"><div class="group-name">' + d.name + '</div></div>'
@@ -3098,6 +3098,7 @@
                     }).join('');
                 }
 
+                // 发文占比视图：沿用发文量结构，按百分比渲染条形与标签
                 function renderRatio() {
                     var rows = wrap.querySelector('[data-role="ratio-cluster-rows"]');
                     var axisTop = wrap.querySelector('[data-role="ratio-axis-top"]');
@@ -3114,7 +3115,6 @@
                     rows.innerHTML = data.map(function (d) {
                         var aWidth = d.ratioA > 0 ? d.ratioA.toFixed(1) : 0;
                         var bWidth = d.ratioB > 0 ? d.ratioB.toFixed(1) : 0;
-                        var typeText = d.shared ? '共同平台' : (d.onlyA ? 'A独有' : 'B独有');
                         return ''
                             + '<div class="group-row">'
                             + '  <div class="group-label"><div class="group-name">' + d.name + '</div></div>'
@@ -3128,6 +3128,7 @@
 
                 }
 
+                // 视图切换：根据当前模式切换卡片显隐并触发渲染
                 function switchMode() {
                     var volumeCard = wrap.querySelector('[data-role="volume-card"]');
                     var mobileList = wrap.querySelector('[data-role="mobile-list"]');
@@ -3140,6 +3141,7 @@
                     mobileList.style.display = 'none';
                 }
 
+                // 帮助弹层交互：按钮开关、点击空白关闭、ESC 关闭
                 function bindDiffstructHelp() {
                     if (!helpWrap || !helpBtn || !helpPop) return;
                     function setOpen(open) {
@@ -3165,6 +3167,7 @@
                     });
                 }
 
+                // 渲染入口：统一刷新当前模式的数据视图
                 function render() {
                     renderCluster();
                     renderRatio();
@@ -3214,6 +3217,7 @@
             <div class="first-speed-stack">
                     <div class="first-speed-chart-wrap">
                         <div id="firstSpeedChartMain"></div>
+                        <div class="first-speed-wave-desc"><span class="first-speed-wave-icon" aria-hidden="true"></span>水波纹表示最早首发点</div>
                     </div>
             </div>
             <div id="firstSpeedDataTableWrap" aria-label="首发速度数据表"></div>
@@ -3238,6 +3242,22 @@
                 var bData = rawData.map(function (d, i) {
                     return { value: [d.b, i], platform: d.platform, a: d.a, b: d.b };
                 });
+                var aEarliestIdx = 0;
+                var bEarliestIdx = 0;
+                for (var ei = 1; ei < rawData.length; ei++) {
+                    if (rawData[ei].a < rawData[aEarliestIdx].a) aEarliestIdx = ei;
+                    if (rawData[ei].b < rawData[bEarliestIdx].b) bEarliestIdx = ei;
+                }
+                var aEarliestPoint = {
+                    value: [rawData[aEarliestIdx].a, aEarliestIdx],
+                    platform: rawData[aEarliestIdx].platform,
+                    val: rawData[aEarliestIdx].a
+                };
+                var bEarliestPoint = {
+                    value: [rawData[bEarliestIdx].b, bEarliestIdx],
+                    platform: rawData[bEarliestIdx].platform,
+                    val: rawData[bEarliestIdx].b
+                };
 
                 function renderFsChart() {
                     var el = document.getElementById('firstSpeedChartMain');
@@ -3383,6 +3403,29 @@
                                 data: aData
                             },
                             {
+                                name: '事件 A 最早点',
+                                type: 'effectScatter',
+                                silent: true,
+                                z: 5,
+                                symbol: 'circle',
+                                symbolSize: 14,
+                                rippleEffect: {
+                                    period: 4,
+                                    scale: 2.6,
+                                    brushType: 'stroke'
+                                },
+                                itemStyle: {
+                                    color: '#F6AB00',
+                                    borderColor: '#ffffff',
+                                    borderWidth: 3,
+                                    shadowBlur: 10,
+                                    shadowColor: 'rgba(246,171,0,.28)'
+                                },
+                                label: { show: false },
+                                tooltip: { show: false },
+                                data: [aEarliestPoint]
+                            },
+                            {
                                 name: '事件 B',
                                 type: 'scatter',
                                 z: 3,
@@ -3403,6 +3446,29 @@
                                     formatter: function (p) { return p.data.b + 'min'; }
                                 },
                                 data: bData
+                            },
+                            {
+                                name: '事件 B 最早点',
+                                type: 'effectScatter',
+                                silent: true,
+                                z: 5,
+                                symbol: 'circle',
+                                symbolSize: 14,
+                                rippleEffect: {
+                                    period: 4,
+                                    scale: 2.6,
+                                    brushType: 'stroke'
+                                },
+                                itemStyle: {
+                                    color: '#6E81B6',
+                                    borderColor: '#ffffff',
+                                    borderWidth: 3,
+                                    shadowBlur: 10,
+                                    shadowColor: 'rgba(110,129,182,.24)'
+                                },
+                                label: { show: false },
+                                tooltip: { show: false },
+                                data: [bEarliestPoint]
                             }
                         ],
                         graphic: [
@@ -4462,6 +4528,7 @@ http://stock.10jqka.com.cn/20260225/c674892316.shtml
             $(".accNewsList").text(title);
         }
 
+        // TODO-CHECK: 当前页面未发现直接调用；可能由外部模板或历史弹层入口触发，暂保留。
         function closeAiChartBtnModal(title) {
             document.getElementById('aiChatModal').style.display = 'none';
             //pauseStream();
@@ -4471,6 +4538,7 @@ http://stock.10jqka.com.cn/20260225/c674892316.shtml
             $("#aiChatText").load("/VolcAI/Chat",{srmd5 : '77940ecc2359b2b3ceab672075c93fed'});
         }
 
+        // TODO-CHECK: 当前页面未发现直接调用；如确认无外部依赖可删除。
         function loadVolcAIData() {
             $("#aiChatText").load("/VolcAI/ChatContent",{srmd5 : '77940ecc2359b2b3ceab672075c93fed'});
         }
@@ -5093,6 +5161,7 @@ http://stock.10jqka.com.cn/20260225/c674892316.shtml
         /**
          * 批量初始化多个元素
         */
+        // TODO-CHECK: 当前页面未发现调用；用于批量初始化 tooltip 的预留工具函数。
         function initMultipleTooltips(elements) {
             const instances = [];
             elements.forEach(config => {
